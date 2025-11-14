@@ -11,15 +11,14 @@ import {
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDR59j50bM6ufEu29ROT0CwHNs9BrPrIHQ",
-  authDomain: "oauth-d3a17.firebaseapp.com",
-  projectId: "oauth-d3a17",
-  storageBucket: "oauth-d3a17.appspot.com",
-  messagingSenderId: "240226710966",
-  appId: "1:240226710966:web:91d64abfb67cffd1083d17",
-  measurementId: "G-YPC9CPEZYM"
+    apiKey: "AIzaSyCvjEzgvggdqFj_c3cjrhBUbwKxnfRR-f4",
+    authDomain: "oauth-47e7f.firebaseapp.com",
+    projectId: "oauth-47e7f",
+    storageBucket: "oauth-47e7f.firebasestorage.app",
+    messagingSenderId: "658592373814",
+    appId: "1:658592373814:web:50bd952954e186c4e38c97",
+    measurementId: "G-6LFDC2WYYR"
 };
-
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -27,26 +26,12 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Prevent redirect loops
-let loginAuthChecked = false;
-let loginRedirecting = false;
-
 // Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
-  // Prevent multiple checks
-  if (loginAuthChecked) return;
-  loginAuthChecked = true;
-  
   if (user) {
-    // User is already logged in, redirect to dashboard (only if not already on dashboard)
-    const currentPath = window.location.pathname;
-    const isDashboardPage = currentPath.includes('dashboard.html') || currentPath.endsWith('/dashboard.html') || currentPath === '/dashboard.html';
-    
-    if (!loginRedirecting && !isDashboardPage) {
-      loginRedirecting = true;
-      console.log("User already logged in, redirecting to dashboard...");
-      window.location.href = "/dashboard.html";
-    }
+    // User is already logged in, redirect to dashboard
+    console.log("User already logged in, redirecting to dashboard...");
+    window.location.href = "/dashboard.html";
   }
 });
 
