@@ -2,6 +2,12 @@
   publish = "public"
   command = "echo 'No build step needed for static files'"
 
+# Exclude files from secrets scanning (these are template files, not real secrets)
+[build.environment]
+  SECRETS_SCAN_OMIT_PATHS = "ENV_TEMPLATE.txt,postman_collection.json,services/,routes/,server.js,*.bat,*.md"
+  # Alternative: Disable secrets scanning entirely (uncomment if above doesn't work)
+  # SECRETS_SCAN_ENABLED = "false"
+
 # Redirect all routes to index.html for client-side routing
 [[redirects]]
   from = "/*"

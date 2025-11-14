@@ -1,0 +1,17 @@
+# Ignore backend files (not needed for static deployment)
+server.js
+routes/
+services/
+node_modules/
+package.json
+package-lock.json
+postman_collection.json
+ENV_TEMPLATE.txt
+*.bat
+*.md
+.git/
+.gitignore
+
+# These files contain template values, not real secrets
+ENV_TEMPLATE.txt
+
