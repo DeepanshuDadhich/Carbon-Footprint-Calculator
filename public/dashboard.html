@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carbon Footprint Calculator</title>
+    <title>CalCarbo - Carbon Footprint Calculator</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
+    <div class="nature-background"></div>
+    <div class="leaf-pattern"></div>
     <div class="container">
         <header>
             <div class="header-main">
                 <div class="header-text">
-                    <h1>🌍 Carbon Footprint Calculator</h1>
+                    <h1><span class="logo-cal">Cal</span><span class="logo-carbo">Carbo</span></h1>
                     <p class="subtitle">Track and visualize your carbon emissions</p>
                 </div>
                 <div class="header-actions">
+                    <button onclick="goToResults()" class="btn-profile" style="margin-right: 10px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        View Results
+                    </button>
                     <div class="user-info" id="userInfo">
                         <span id="userDisplayName" class="user-name"></span>
                         <button onclick="goToProfile()" class="btn-profile">
@@ -29,30 +36,6 @@
                 </div>
             </div>
         </header>
-
-        <!-- Statistics Dashboard -->
-        <section class="stats-section">
-            <div class="stat-card">
-                <h3>Total Emissions</h3>
-                <p class="stat-value" id="totalEmissions">0 kg</p>
-                <span class="stat-label">CO₂e</span>
-            </div>
-            <div class="stat-card">
-                <h3>Activities Tracked</h3>
-                <p class="stat-value" id="totalActivities">0</p>
-                <span class="stat-label">entries</span>
-            </div>
-            <div class="stat-card">
-                <h3>Daily Average</h3>
-                <p class="stat-value" id="dailyAverage">0 kg</p>
-                <span class="stat-label">per day</span>
-            </div>
-            <div class="stat-card">
-                <h3>Offset Cost</h3>
-                <p class="stat-value" id="offsetCost">$0</p>
-                <span class="stat-label">estimated</span>
-            </div>
-        </section>
 
         <!-- Activity Input Form -->
         <section class="input-section">
@@ -73,37 +56,34 @@
             <!-- Dynamic form fields based on activity type -->
             <div id="dynamicFields"></div>
 
-            <button onclick="calculateEmission()" class="btn-primary">Calculate Emission</button>
-        </section>
-
-        <!-- Charts Section -->
-        <section class="charts-section">
-            <div class="chart-container">
-                <h2>Daily Emissions (Last 7 Days)</h2>
-                <canvas id="dailyChart"></canvas>
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button onclick="resetForm()" class="btn-secondary">Reset Form</button>
+                <button onclick="calculateEmission()" class="btn-primary">Calculate Emission</button>
             </div>
-            <div class="chart-container">
-                <h2>Weekly Emissions (Last 4 Weeks)</h2>
-                <canvas id="weeklyChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h2>Emissions by Activity Type</h2>
-                <canvas id="activityChart"></canvas>
-            </div>
-        </section>
-
-        <!-- Offset Suggestions -->
-        <section class="offset-section" id="offsetSection" style="display: none;">
-            <h2>🌱 Carbon Offset Suggestions</h2>
-            <div id="offsetContent"></div>
-        </section>
-
-        <!-- Recent Activities -->
-        <section class="history-section">
-            <h2>Recent Activities</h2>
-            <div id="activityHistory"></div>
         </section>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About CalCarbo</h3>
+                <p>An innovative carbon footprint calculator designed to help individuals and organizations track, analyze, and reduce their environmental impact through accurate emissions calculations and actionable insights.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Credits</h3>
+                <p>Developed by <strong>Team 39</strong></p>
+                <p>Polaris School of Technology</p>
+                <p>&copy; 2024 CalCarbo. All rights reserved.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Support: support@calcarbo.com</p>
+                <p>For inquiries and feedback</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- Toast Notification -->
     <div id="toast" class="toast"></div>

@@ -1,18 +1,9 @@
 // API Base URL
 const API_URL = '/api';
 
-// Chart instances
-let dailyChart = null;
-let weeklyChart = null;
-let activityChart = null;
-
 // Initialize app on page load
 document.addEventListener('DOMContentLoaded', () => {
-    initializeCharts();
-    loadStatistics();
-    loadHistory();
-    loadDailyData();
-    loadWeeklyData();
+    // Dashboard is now just for input - no statistics or history to load
 });
 
 // Update form fields based on selected activity type
@@ -215,6 +206,20 @@ function updateFormFields() {
     dynamicFields.innerHTML = html;
 }
 
+// Navigation functions
+function goToResults() {
+    window.location.href = '/results.html';
+}
+
+// Reset form
+function resetForm(showToastMessage = true) {
+    document.getElementById('activityType').value = '';
+    updateFormFields();
+    if (showToastMessage) {
+        showToast('Form reset successfully', 'success');
+    }
+}
+
 // Calculate emission
 async function calculateEmission(event) {
     const activityType = document.getElementById('activityType').value;
@@ -281,17 +286,13 @@ async function calculateEmission(event) {
         if (result.success) {
             showToast(`✅ Emission calculated: ${result.data.co2e_kg.toFixed(2)} kg CO₂e`, 'success');
             
-            // Reset form after re-enabling button
-            document.getElementById('activityType').value = '';
-            updateFormFields();
+            // Reset form after successful calculation (without showing toast)
+            resetForm(false);
             
-            // Reload data
-            loadStatistics();
-            loadHistory();
-            loadDailyData();
-            loadWeeklyData();
-            loadActivityData();
-            loadOffsetSuggestions();
+            // Navigate to results page after a short delay
+            setTimeout(() => {
+                window.location.href = '/results.html';
+            }, 1500);
         } else {
             // Show detailed error message
             const errorMsg = result.error.message || result.error || 'Calculation failed';
@@ -372,200 +373,6 @@ async function loadHistory() {
     }
 }
 
-// Load daily data
-async function loadDailyData() {
-    try {
-        const response = await fetch(`${API_URL}/emissions/daily?days=7`);
-        const result = await response.json();
-        
-        if (result.success) {
-            updateDailyChart(result.data);
-        }
-    } catch (error) {
-        console.error('Error loading daily data:', error);
-    }
-}
-
-// Load weekly data
-async function loadWeeklyData() {
-    try {
-        const response = await fetch(`${API_URL}/emissions/weekly?weeks=4`);
-        const result = await response.json();
-        
-        if (result.success) {
-            updateWeeklyChart(result.data);
-        }
-    } catch (error) {
-        console.error('Error loading weekly data:', error);
-    }
-}
-
-// Load activity breakdown data
-async function loadActivityData() {
-    try {
-        const response = await fetch(`${API_URL}/emissions/statistics`);
-        const result = await response.json();
-        
-        if (result.success && result.data.by_activity) {
-            updateActivityChart(result.data.by_activity);
-        }
-    } catch (error) {
-        console.error('Error loading activity data:', error);
-    }
-}
-
-// Load offset suggestions
-async function loadOffsetSuggestions() {
-    try {
-        const response = await fetch(`${API_URL}/offsets/total`);
-        const result = await response.json();
-        
-        if (result.success && result.emissions_summary.total_co2_kg > 0) {
-            displayOffsetSuggestions(result);
-        }
-    } catch (error) {
-        console.error('Error loading offset suggestions:', error);
-    }
-}
-
-// Display offset suggestions
-function displayOffsetSuggestions(data) {
-    const offsetSection = document.getElementById('offsetSection');
-    const offsetContent = document.getElementById('offsetContent');
-    
-    const summary = data.emissions_summary;
-    const offsets = data.offset_suggestions;
-    
-    let html = `
-        <div class="offset-summary">
-            <h3>Your Total Emissions</h3>
-            <p><strong>Total CO₂:</strong> ${summary.total_co2_kg.toFixed(2)} kg (${summary.total_co2_tons} tons)</p>
-            <p><strong>Total Activities:</strong> ${summary.total_activities}</p>
-            <p><strong>Estimated Offset Cost:</strong> $${offsets.estimated_offset_cost.amount} ${offsets.estimated_offset_cost.currency}</p>
-        </div>
-        
-        <h3>Recommended Offset Projects</h3>
-        <div class="offset-projects">
-    `;
-    
-    offsets.suggested_projects.forEach(project => {
-        html += `
-            <div class="project-card">
-                <h3>${project.name}</h3>
-                <span class="project-type">${project.type}</span>
-                <div class="project-location">📍 ${project.location}</div>
-                <p>${project.description}</p>
-                <div class="project-price">$${project.price_per_ton}/ton CO₂</div>
-                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
-                    ✓ ${project.certification} Certified
-                </p>
-            </div>
-        `;
-    });
-    
-    html += '</div>';
-    
-    if (offsets.recommendations) {
-        html += '<div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">';
-        offsets.recommendations.forEach(rec => {
-            html += `<p style="margin: 8px 0;">💡 ${rec}</p>`;
-        });
-        html += '</div>';
-    }
-    
-    offsetContent.innerHTML = html;
-    offsetSection.style.display = 'block';
-}
-
-// Initialize charts
-function initializeCharts() {
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top'
-            }
-        }
-    };
-    
-    // Daily chart
-    const dailyCtx = document.getElementById('dailyChart').getContext('2d');
-    dailyChart = new Chart(dailyCtx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'CO₂e (kg)',
-                data: [],
-                borderColor: '#667eea',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: chartOptions
-    });
-    
-    // Weekly chart
-    const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
-    weeklyChart = new Chart(weeklyCtx, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'CO₂e (kg)',
-                data: [],
-                backgroundColor: '#764ba2'
-            }]
-        },
-        options: chartOptions
-    });
-    
-    // Activity chart
-    const activityCtx = document.getElementById('activityChart').getContext('2d');
-    activityChart = new Chart(activityCtx, {
-        type: 'doughnut',
-        data: {
-            labels: [],
-            datasets: [{
-                data: [],
-                backgroundColor: [
-                    '#667eea',
-                    '#764ba2',
-                    '#f093fb',
-                    '#4facfe',
-                    '#43e97b'
-                ]
-            }]
-        },
-        options: chartOptions
-    });
-}
-
-// Update daily chart
-function updateDailyChart(data) {
-    dailyChart.data.labels = data.map(d => formatDateShort(d.date));
-    dailyChart.data.datasets[0].data = data.map(d => d.total_co2_kg.toFixed(2));
-    dailyChart.update();
-}
-
-// Update weekly chart
-function updateWeeklyChart(data) {
-    weeklyChart.data.labels = data.map(d => 
-        `${formatDateShort(d.week_start)} - ${formatDateShort(d.week_end)}`
-    );
-    weeklyChart.data.datasets[0].data = data.map(d => d.total_co2_kg.toFixed(2));
-    weeklyChart.update();
-}
-
-// Update activity chart
-function updateActivityChart(data) {
-    activityChart.data.labels = data.map(d => d.activity_type);
-    activityChart.data.datasets[0].data = data.map(d => d.total_co2_kg.toFixed(2));
-    activityChart.update();
-}
 
 // Helper functions
 function getActivityIcon(activityType) {
