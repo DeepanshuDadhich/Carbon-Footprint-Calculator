@@ -1,0 +1,24 @@
+[build]
+  publish = "public"
+  command = "echo 'No build step needed for static files'"
+
+# Redirect all routes to index.html for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
+
+# Note: Your backend API (server.js) needs to be deployed separately
+# Options:
+# 1. Deploy backend to Heroku/Railway/Render and proxy API calls
+# 2. Use Netlify Functions to convert your Express routes
+# 3. Deploy backend separately and update API_URL in app.js
+
+# Example: If you deploy backend to Heroku, uncomment and update:
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://your-backend.herokuapp.com/api/:splat"
+#   status = 200
+#   force = true
+
