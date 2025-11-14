@@ -48,6 +48,12 @@
   to = "/.netlify/functions/emissions-weekly"
   status = 200
 
+# Offset API routes
+[[redirects]]
+  from = "/api/offsets/total"
+  to = "/.netlify/functions/offsets-total"
+  status = 200
+
 # ✅ Backend API is now handled by Netlify Functions (see netlify/functions/)
 # The Express routes have been converted to serverless functions
 # Add CLIMATIQ_API_KEY in Netlify Dashboard → Site settings → Environment variables

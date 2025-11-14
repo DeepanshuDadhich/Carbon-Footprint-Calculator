@@ -128,13 +128,28 @@ async function loadActivityData() {
 async function loadOffsetSuggestions() {
     try {
         const response = await fetch(`${API_URL}/offsets/total`);
+        
+        // Check if response is OK
+        if (!response.ok) {
+            console.warn('Offset suggestions API not available:', response.status);
+            return;
+        }
+        
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            console.warn('Offset suggestions API returned non-JSON response');
+            return;
+        }
+        
         const result = await response.json();
         
-        if (result.success && result.emissions_summary.total_co2_kg > 0) {
+        if (result.success && result.emissions_summary && result.emissions_summary.total_co2_kg > 0) {
             displayOffsetSuggestions(result);
         }
     } catch (error) {
         console.error('Error loading offset suggestions:', error);
+        // Silently fail - offset suggestions are optional
     }
 }
 
