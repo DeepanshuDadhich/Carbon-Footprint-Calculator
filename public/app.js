@@ -284,6 +284,18 @@ async function calculateEmission(event) {
         button.textContent = originalText;
         
         if (result.success) {
+            // Store emission in localStorage (Netlify Functions are stateless)
+            if (window.clientStorage) {
+                window.clientStorage.addEmission({
+                    activity_type: activityType,
+                    input_data: formData,
+                    co2_kg: result.data.co2e_kg,
+                    co2_unit: result.data.co2e_unit,
+                    emission_factor: result.data.emission_factor,
+                    constituent_gases: result.data.constituent_gases
+                });
+            }
+            
             showToast(`✅ Emission calculated: ${result.data.co2e_kg.toFixed(2)} kg CO₂e`, 'success');
             
             // Reset form after successful calculation (without showing toast)
@@ -315,6 +327,27 @@ async function calculateEmission(event) {
 // Load statistics
 async function loadStatistics() {
     try {
+        // Use localStorage if available (for Netlify Functions stateless issue)
+        if (window.clientStorage) {
+            const stats = window.clientStorage.getStatistics();
+            document.getElementById('totalEmissions').textContent = 
+                `${parseFloat(stats.total_emissions_kg).toFixed(2)} kg`;
+            document.getElementById('totalActivities').textContent = stats.total_activities;
+            document.getElementById('dailyAverage').textContent = 
+                `${stats.daily_average_kg} kg`;
+            
+            // Calculate offset cost
+            const offsetCost = (parseFloat(stats.total_emissions_kg) / 1000 * 15).toFixed(2);
+            document.getElementById('offsetCost').textContent = `$${offsetCost}`;
+            
+            // Load activity chart
+            if (stats.by_activity && stats.by_activity.length > 0) {
+                loadActivityData();
+            }
+            return;
+        }
+        
+        // Fallback to API
         const response = await fetch(`${API_URL}/emissions/statistics`);
         const result = await response.json();
         
@@ -343,6 +376,33 @@ async function loadStatistics() {
 // Load history
 async function loadHistory() {
     try {
+        // Use localStorage if available
+        if (window.clientStorage) {
+            const emissions = window.clientStorage.getAllEmissions();
+            const historyDiv = document.getElementById('activityHistory');
+            
+            if (emissions.length === 0) {
+                historyDiv.innerHTML = '<div class="empty-state"><p>No activities tracked yet. Add your first activity above!</p></div>';
+                return;
+            }
+            
+            // Show last 10 activities
+            const recentActivities = emissions.slice(-10).reverse();
+            
+            historyDiv.innerHTML = recentActivities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-header">
+                        <span class="activity-type">${getActivityIcon(activity.activity_type)} ${activity.activity_type}</span>
+                        <span class="activity-co2">${activity.co2_kg.toFixed(2)} kg CO₂e</span>
+                    </div>
+                    <div class="activity-details">${formatActivityDetails(activity)}</div>
+                    <div class="activity-date">${formatDate(activity.timestamp)}</div>
+                </div>
+            `).join('');
+            return;
+        }
+        
+        // Fallback to API
         const response = await fetch(`${API_URL}/emissions/history`);
         const result = await response.json();
         

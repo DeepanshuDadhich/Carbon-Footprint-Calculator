@@ -29,6 +29,22 @@ function goToProfile() {
 // Load statistics
 async function loadStatistics() {
     try {
+        // Use localStorage if available (for Netlify Functions stateless issue)
+        if (window.clientStorage) {
+            const stats = window.clientStorage.getStatistics();
+            document.getElementById('totalEmissions').textContent = 
+                `${parseFloat(stats.total_emissions_kg).toFixed(2)} kg`;
+            document.getElementById('totalActivities').textContent = stats.total_activities;
+            document.getElementById('dailyAverage').textContent = 
+                `${stats.daily_average_kg} kg`;
+            
+            // Calculate offset cost
+            const offsetCost = (parseFloat(stats.total_emissions_kg) / 1000 * 15).toFixed(2);
+            document.getElementById('offsetCost').textContent = `$${offsetCost}`;
+            return;
+        }
+        
+        // Fallback to API
         const response = await fetch(`${API_URL}/emissions/statistics`);
         const result = await response.json();
         
@@ -52,6 +68,33 @@ async function loadStatistics() {
 // Load history
 async function loadHistory() {
     try {
+        // Use localStorage if available
+        if (window.clientStorage) {
+            const emissions = window.clientStorage.getAllEmissions();
+            const historyDiv = document.getElementById('activityHistory');
+            
+            if (emissions.length === 0) {
+                historyDiv.innerHTML = '<div class="empty-state"><p>No activities tracked yet. Add your first activity on the dashboard!</p></div>';
+                return;
+            }
+            
+            // Show last 10 activities
+            const recentActivities = emissions.slice(-10).reverse();
+            
+            historyDiv.innerHTML = recentActivities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-header">
+                        <span class="activity-type">${getActivityIcon(activity.activity_type)} ${activity.activity_type}</span>
+                        <span class="activity-co2">${activity.co2_kg.toFixed(2)} kg CO₂e</span>
+                    </div>
+                    <div class="activity-details">${formatActivityDetails(activity)}</div>
+                    <div class="activity-date">${formatDate(activity.timestamp)}</div>
+                </div>
+            `).join('');
+            return;
+        }
+        
+        // Fallback to API
         const response = await fetch(`${API_URL}/emissions/history`);
         const result = await response.json();
         
@@ -85,6 +128,14 @@ async function loadHistory() {
 // Load daily data
 async function loadDailyData() {
     try {
+        // Use localStorage if available
+        if (window.clientStorage) {
+            const dailyData = window.clientStorage.getDailyAggregated(7);
+            updateDailyChart(dailyData);
+            return;
+        }
+        
+        // Fallback to API
         const response = await fetch(`${API_URL}/emissions/daily?days=7`);
         const result = await response.json();
         
@@ -99,6 +150,14 @@ async function loadDailyData() {
 // Load weekly data
 async function loadWeeklyData() {
     try {
+        // Use localStorage if available
+        if (window.clientStorage) {
+            const weeklyData = window.clientStorage.getWeeklyAggregated(4);
+            updateWeeklyChart(weeklyData);
+            return;
+        }
+        
+        // Fallback to API
         const response = await fetch(`${API_URL}/emissions/weekly?weeks=4`);
         const result = await response.json();
         
@@ -113,6 +172,16 @@ async function loadWeeklyData() {
 // Load activity breakdown data
 async function loadActivityData() {
     try {
+        // Use localStorage if available
+        if (window.clientStorage) {
+            const stats = window.clientStorage.getStatistics();
+            if (stats.by_activity && stats.by_activity.length > 0) {
+                updateActivityChart(stats.by_activity);
+            }
+            return;
+        }
+        
+        // Fallback to API
         const response = await fetch(`${API_URL}/emissions/statistics`);
         const result = await response.json();
         
@@ -127,29 +196,79 @@ async function loadActivityData() {
 // Load offset suggestions
 async function loadOffsetSuggestions() {
     try {
-        const response = await fetch(`${API_URL}/offsets/total`);
+        // Get total emissions from localStorage first
+        let totalEmissions = 0;
+        let stats = null;
         
-        // Check if response is OK
-        if (!response.ok) {
-            console.warn('Offset suggestions API not available:', response.status);
+        if (window.clientStorage) {
+            stats = window.clientStorage.getStatistics();
+            totalEmissions = parseFloat(stats.total_emissions_kg) || 0;
+        }
+        
+        if (totalEmissions === 0) {
+            // Try API as fallback
+            const response = await fetch(`${API_URL}/offsets/total`);
+            
+            if (!response.ok) {
+                return;
+            }
+            
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                return;
+            }
+            
+            const result = await response.json();
+            
+            if (result.success && result.emissions_summary && result.emissions_summary.total_co2_kg > 0) {
+                displayOffsetSuggestions(result);
+            }
             return;
         }
         
-        // Check if response is JSON
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            console.warn('Offset suggestions API returned non-JSON response');
-            return;
-        }
+        // Use localStorage data to create offset response
+        const offsetCost = (totalEmissions / 1000 * 15).toFixed(2);
+        const mockResult = {
+            success: true,
+            emissions_summary: {
+                total_co2_kg: totalEmissions,
+                total_co2_tons: (totalEmissions / 1000).toFixed(3),
+                total_activities: stats.total_activities,
+                by_activity: stats.by_activity
+            },
+            offset_suggestions: {
+                estimated_offset_cost: {
+                    amount: offsetCost,
+                    currency: 'USD'
+                },
+                suggested_projects: [
+                    {
+                        name: 'Renewable Energy Project',
+                        type: 'Renewable Energy',
+                        location: 'Global',
+                        description: 'Support renewable energy projects to offset your carbon footprint.',
+                        price_per_ton: 15,
+                        certification: 'Gold Standard'
+                    },
+                    {
+                        name: 'Reforestation Project',
+                        type: 'Forestry',
+                        location: 'Global',
+                        description: 'Plant trees and restore forests to absorb CO₂ from the atmosphere.',
+                        price_per_ton: 12,
+                        certification: 'Gold Standard'
+                    }
+                ],
+                recommendations: [
+                    'Consider offsetting your emissions through verified carbon offset projects',
+                    'Reduce your carbon footprint by choosing sustainable transportation options'
+                ]
+            }
+        };
         
-        const result = await response.json();
-        
-        if (result.success && result.emissions_summary && result.emissions_summary.total_co2_kg > 0) {
-            displayOffsetSuggestions(result);
-        }
+        displayOffsetSuggestions(mockResult);
     } catch (error) {
         console.error('Error loading offset suggestions:', error);
-        // Silently fail - offset suggestions are optional
     }
 }
 
