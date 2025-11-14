@@ -109,7 +109,7 @@ function displayUserInfo(user) {
 // Load user statistics from the API
 async function loadUserStatistics() {
   try {
-    const statsResponse = await fetch('http://localhost:3000/api/emissions/statistics');
+    const statsResponse = await fetch('/api/emissions/statistics');
     const statsData = await statsResponse.json();
     
     if (statsData.success) {
