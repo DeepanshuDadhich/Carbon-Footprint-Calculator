@@ -134,13 +134,61 @@ class ClimatiqService {
   /**
    * Calculate procurement/purchase emissions
    */
-  async calculateProcurement({ money, money_unit = 'usd', category, region = 'US' }) {
-    return this.calculateEmission({
-      emission_factor: {
-        activity_id: category || 'consumer_goods-type_consumer_goods',
-        data_version: '^27',
-        region: region
-      },
+  async calculateProcurement({ money, money_unit = 'usd', category, region }) {
+    // Try multiple activity ID formats - Climatiq has different formats
+    const activityIdOptions = [
+      category || 'consumer_goods-type_consumer_goods',
+      'consumer_goods',
+      'purchased_goods',
+      'purchased_goods-type_consumer_goods'
+    ];
+    
+    // Try without region first (most procurement activities don't support region)
+    for (const activityId of activityIdOptions) {
+      const emissionFactor = {
+        activity_id: activityId,
+        data_version: '^27'
+      };
+      
+      // Try calculation without region
+      let result = await this.calculateEmission({
+        emission_factor: emissionFactor,
+        parameters: {
+          money: parseFloat(money),
+          money_unit: money_unit
+        }
+      });
+      
+      // If successful, return
+      if (result.success) {
+        return result;
+      }
+      
+      // If it fails and region was provided, try with region
+      if (region) {
+        emissionFactor.region = region;
+        result = await this.calculateEmission({
+          emission_factor: emissionFactor,
+          parameters: {
+            money: parseFloat(money),
+            money_unit: money_unit
+          }
+        });
+        
+        if (result.success) {
+          return result;
+        }
+      }
+    }
+    
+    // If all attempts failed, return the last error
+    const emissionFactor = {
+      activity_id: activityIdOptions[0],
+      data_version: '^27'
+    };
+    
+    return await this.calculateEmission({
+      emission_factor: emissionFactor,
       parameters: {
         money: parseFloat(money),
         money_unit: money_unit

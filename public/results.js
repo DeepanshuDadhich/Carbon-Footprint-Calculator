@@ -153,27 +153,7 @@ function displayOffsetSuggestions(data) {
             <p><strong>Total Activities:</strong> ${summary.total_activities}</p>
             <p><strong>Estimated Offset Cost:</strong> $${offsets.estimated_offset_cost.amount} ${offsets.estimated_offset_cost.currency}</p>
         </div>
-        
-        <h3>Recommended Offset Projects</h3>
-        <div class="offset-projects">
     `;
-    
-    offsets.suggested_projects.forEach(project => {
-        html += `
-            <div class="project-card">
-                <h3>${project.name}</h3>
-                <span class="project-type">${project.type}</span>
-                <div class="project-location">📍 ${project.location}</div>
-                <p>${project.description}</p>
-                <div class="project-price">$${project.price_per_ton}/ton CO₂</div>
-                <p style="margin-top: 10px; font-size: 0.9em; color: var(--text-medium);">
-                    ✓ ${project.certification} Certified
-                </p>
-            </div>
-        `;
-    });
-    
-    html += '</div>';
     
     if (offsets.recommendations) {
         html += '<div style="margin-top: 20px; padding: 15px; background: rgba(58, 74, 92, 0.2); border-radius: 8px; border: 1px solid rgba(58, 74, 92, 0.3);">';
