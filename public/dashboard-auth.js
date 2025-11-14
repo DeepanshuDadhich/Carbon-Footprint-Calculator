@@ -16,8 +16,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// Prevent redirect loops
+let authChecked = false;
+let redirecting = false;
+
 // Check authentication state
 onAuthStateChanged(auth, (user) => {
+  // Prevent multiple checks
+  if (authChecked) return;
+  authChecked = true;
+  
   const userDisplayName = document.getElementById("userDisplayName");
   
   if (user) {
@@ -32,9 +40,15 @@ onAuthStateChanged(auth, (user) => {
     window.currentUser = user;
     console.log("User logged in:", user.email);
   } else {
-    // User is not signed in - redirect to login
-    console.log("No user logged in, redirecting to login...");
-    window.location.href = "/login.html";
+    // User is not signed in - redirect to login (only if not already redirecting or on login page)
+    const currentPath = window.location.pathname;
+    const isLoginPage = currentPath.includes('login.html') || currentPath.endsWith('/login.html') || currentPath === '/login.html';
+    
+    if (!redirecting && !isLoginPage) {
+      redirecting = true;
+      console.log("No user logged in, redirecting to login...");
+      window.location.href = "/login.html";
+    }
   }
 });
 
