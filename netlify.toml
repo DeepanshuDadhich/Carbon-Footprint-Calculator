@@ -1,10 +1,14 @@
 [build]
   publish = "public"
   command = "echo 'No build step needed for static files'"
+  functions = "netlify/functions"
 
 # Disable secrets scanning entirely (these are template files and example URLs, not real secrets)
 [build.environment]
   SECRETS_SCAN_ENABLED = "false"
+  # Add your Climatiq API key in Netlify dashboard under Site settings > Environment variables
+  # CLIMATIQ_API_KEY = "your_key_here"
+  # CLIMATIQ_API_URL = "https://api.climatiq.io"
 
 # Redirect root to login page
 [[redirects]]
@@ -18,16 +22,33 @@
   to = "/login.html"
   status = 302
 
-# Note: Your backend API (server.js) needs to be deployed separately
-# Options:
-# 1. Deploy backend to Heroku/Railway/Render and proxy API calls
-# 2. Use Netlify Functions to convert your Express routes
-# 3. Deploy backend separately and update API_URL in app.js
+# Proxy API routes to Netlify Functions
+[[redirects]]
+  from = "/api/emissions/calculate"
+  to = "/.netlify/functions/emissions-calculate"
+  status = 200
 
-# Example: If you deploy backend to Heroku, uncomment and update:
-# [[redirects]]
-#   from = "/api/*"
-#   to = "https://your-backend.herokuapp.com/api/:splat"
-#   status = 200
-#   force = true
+[[redirects]]
+  from = "/api/emissions/statistics"
+  to = "/.netlify/functions/emissions-statistics"
+  status = 200
+
+[[redirects]]
+  from = "/api/emissions/history"
+  to = "/.netlify/functions/emissions-history"
+  status = 200
+
+[[redirects]]
+  from = "/api/emissions/daily"
+  to = "/.netlify/functions/emissions-daily"
+  status = 200
+
+[[redirects]]
+  from = "/api/emissions/weekly"
+  to = "/.netlify/functions/emissions-weekly"
+  status = 200
+
+# ✅ Backend API is now handled by Netlify Functions (see netlify/functions/)
+# The Express routes have been converted to serverless functions
+# Add CLIMATIQ_API_KEY in Netlify Dashboard → Site settings → Environment variables
 
