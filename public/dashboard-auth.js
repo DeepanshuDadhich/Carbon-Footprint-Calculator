@@ -3,13 +3,13 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 
 // Firebase configuration (using your Firebase project)
 const firebaseConfig = {
-  apiKey: "AIzaSyDR59j50bM6ufEu29ROT0CwHNs9BrPrIHQ",
-  authDomain: "oauth-d3a17.firebaseapp.com",
-  projectId: "oauth-d3a17",
-  storageBucket: "oauth-d3a17.appspot.com",
-  messagingSenderId: "240226710966",
-  appId: "1:240226710966:web:91d64abfb67cffd1083d17",
-  measurementId: "G-YPC9CPEZYM"
+  apiKey: "AIzaSyCvjEzgvggdqFj_c3cjrhBUbwKxnfRR-f4",
+  authDomain: "oauth-47e7f.firebaseapp.com",
+  projectId: "oauth-47e7f",
+  storageBucket: "oauth-47e7f.firebasestorage.app",
+  messagingSenderId: "658592373814",
+  appId: "1:658592373814:web:50bd952954e186c4e38c97",
+  measurementId: "G-6LFDC2WYYR"
 };
 
 // Initialize Firebase

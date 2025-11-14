@@ -6,12 +6,17 @@
 [build.environment]
   SECRETS_SCAN_ENABLED = "false"
 
-# Redirect all routes to index.html for client-side routing
+# Redirect root to login page
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = true
+  from = "/"
+  to = "/login.html"
+  status = 302
+
+# Redirect index.html to login
+[[redirects]]
+  from = "/index.html"
+  to = "/login.html"
+  status = 302
 
 # Note: Your backend API (server.js) needs to be deployed separately
 # Options:

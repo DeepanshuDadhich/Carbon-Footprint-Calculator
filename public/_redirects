@@ -1,2 +1,6 @@
-/*    /index.html   200
+# Redirect root to login page
+/    /login.html   302
+
+# Redirect index.html to login
+/index.html    /login.html   302
 

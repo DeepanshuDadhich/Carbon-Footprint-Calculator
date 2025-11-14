@@ -26,12 +26,26 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+// Prevent redirect loops
+let loginAuthChecked = false;
+let loginRedirecting = false;
+
 // Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
+  // Prevent multiple checks
+  if (loginAuthChecked) return;
+  loginAuthChecked = true;
+  
   if (user) {
-    // User is already logged in, redirect to dashboard
-    console.log("User already logged in, redirecting to dashboard...");
-    window.location.href = "/dashboard.html";
+    // User is already logged in, redirect to dashboard (only if not already on dashboard)
+    const currentPath = window.location.pathname;
+    const isDashboardPage = currentPath.includes('dashboard.html') || currentPath.endsWith('/dashboard.html') || currentPath === '/dashboard.html';
+    
+    if (!loginRedirecting && !isDashboardPage) {
+      loginRedirecting = true;
+      console.log("User already logged in, redirecting to dashboard...");
+      window.location.href = "/dashboard.html";
+    }
   }
 });
 
