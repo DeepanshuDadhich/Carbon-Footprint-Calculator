@@ -105,7 +105,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     showToast(errorMessage, "error");
     loginBtn.disabled = false;
     loginBtn.classList.remove("loading");
-    loginBtn.textContent = "🔓 Login";
+    loginBtn.textContent = "Login";
   }
 });
 
@@ -157,7 +157,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
     showToast(errorMessage, "error");
     signupBtn.disabled = false;
     signupBtn.classList.remove("loading");
-    signupBtn.textContent = "✨ Create Account";
+    signupBtn.textContent = "Create Account";
   }
 });
 

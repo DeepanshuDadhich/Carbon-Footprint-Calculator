@@ -84,7 +84,7 @@ async function loadHistory() {
             historyDiv.innerHTML = recentActivities.map(activity => `
                 <div class="activity-item">
                     <div class="activity-header">
-                        <span class="activity-type">${getActivityIcon(activity.activity_type)} ${activity.activity_type}</span>
+                        <span class="activity-type">${activity.activity_type.charAt(0).toUpperCase() + activity.activity_type.slice(1)}</span>
                         <span class="activity-co2">${activity.co2_kg.toFixed(2)} kg CO₂e</span>
                     </div>
                     <div class="activity-details">${formatActivityDetails(activity)}</div>
@@ -112,7 +112,7 @@ async function loadHistory() {
             historyDiv.innerHTML = recentActivities.map(activity => `
                 <div class="activity-item">
                     <div class="activity-header">
-                        <span class="activity-type">${getActivityIcon(activity.activity_type)} ${activity.activity_type}</span>
+                        <span class="activity-type">${activity.activity_type.charAt(0).toUpperCase() + activity.activity_type.slice(1)}</span>
                         <span class="activity-co2">${activity.co2_kg.toFixed(2)} kg CO₂e</span>
                     </div>
                     <div class="activity-details">${formatActivityDetails(activity)}</div>
@@ -292,7 +292,7 @@ function displayOffsetSuggestions(data) {
     if (offsets.recommendations) {
         html += '<div style="margin-top: 20px; padding: 15px; background: rgba(58, 74, 92, 0.2); border-radius: 8px; border: 1px solid rgba(58, 74, 92, 0.3);">';
         offsets.recommendations.forEach(rec => {
-            html += `<p style="margin: 8px 0; color: var(--text-medium);">💡 ${rec}</p>`;
+            html += `<p style="margin: 8px 0; color: var(--text-medium);">${rec}</p>`;
         });
         html += '</div>';
     }
@@ -481,14 +481,8 @@ function updateActivityChart(data) {
 
 // Helper functions
 function getActivityIcon(activityType) {
-    const icons = {
-        'electricity': '⚡',
-        'travel': '🚗',
-        'freight': '📦',
-        'procurement': '🛒',
-        'fuel': '⛽'
-    };
-    return icons[activityType] || '📊';
+    // Return empty string for cleaner aesthetic
+    return '';
 }
 
 function formatActivityDetails(activity) {
