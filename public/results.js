@@ -318,34 +318,61 @@ function initializeCharts() {
                 }
             },
             tooltip: {
-                backgroundColor: 'rgba(42, 42, 58, 0.95)',
+                backgroundColor: 'rgba(42, 42, 42, 0.98)',
                 titleColor: '#E8E8E8',
                 bodyColor: '#E8E8E8',
-                borderColor: 'rgba(58, 74, 92, 0.5)',
-                borderWidth: 1
+                borderColor: 'rgba(90, 107, 122, 0.6)',
+                borderWidth: 1,
+                padding: 12,
+                titleFont: {
+                    family: "'Inter', sans-serif",
+                    weight: '700',
+                    size: 14
+                },
+                bodyFont: {
+                    family: "'Inter', sans-serif",
+                    size: 13
+                },
+                boxPadding: 8,
+                cornerRadius: 8
             }
         },
         scales: {
             x: {
                 ticks: {
-                    color: '#B0B0B0'
+                    color: '#B0B0B0',
+                    font: {
+                        family: "'Inter', 'Plus Jakarta Sans', system-ui, sans-serif"
+                    }
                 },
                 grid: {
-                    color: 'rgba(128, 128, 128, 0.1)'
+                    color: 'rgba(74, 74, 74, 0.3)',
+                    lineWidth: 1
+                },
+                border: {
+                    color: 'rgba(74, 74, 74, 0.5)'
                 }
             },
             y: {
                 ticks: {
-                    color: '#B0B0B0'
+                    color: '#B0B0B0',
+                    font: {
+                        family: "'Inter', 'Plus Jakarta Sans', system-ui, sans-serif"
+                    },
+                    fontVariantNumeric: 'tabular-nums'
                 },
                 grid: {
-                    color: 'rgba(128, 128, 128, 0.1)'
+                    color: 'rgba(74, 74, 74, 0.3)',
+                    lineWidth: 1
+                },
+                border: {
+                    color: 'rgba(74, 74, 74, 0.5)'
                 }
             }
         }
     };
     
-    // Daily chart
+    // Daily chart - Pollution Theme Colors
     const dailyCtx = document.getElementById('dailyChart');
     if (dailyCtx) {
         dailyChart = new Chart(dailyCtx.getContext('2d'), {
@@ -355,20 +382,22 @@ function initializeCharts() {
                 datasets: [{
                     label: 'CO₂e (kg)',
                     data: [],
-                    borderColor: 'rgba(139, 92, 246, 0.85)',
-                    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                    borderColor: 'rgba(200, 90, 45, 0.9)',
+                    backgroundColor: 'rgba(200, 90, 45, 0.15)',
                     tension: 0.4,
                     fill: true,
-                    pointBackgroundColor: 'rgba(139, 92, 246, 0.85)',
+                    pointBackgroundColor: 'rgba(200, 90, 45, 0.9)',
                     pointBorderColor: '#E8E8E8',
-                    pointBorderWidth: 2
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 }]
             },
             options: chartOptions
         });
     }
     
-    // Weekly chart
+    // Weekly chart - Pollution Theme Colors
     const weeklyCtx = document.getElementById('weeklyChart');
     if (weeklyCtx) {
         weeklyChart = new Chart(weeklyCtx.getContext('2d'), {
@@ -378,14 +407,16 @@ function initializeCharts() {
                 datasets: [{
                     label: 'CO₂e (kg)',
                     data: [],
-                    backgroundColor: 'rgba(59, 130, 246, 0.85)'
+                    backgroundColor: 'rgba(90, 107, 122, 0.8)',
+                    borderColor: 'rgba(90, 107, 122, 1)',
+                    borderWidth: 1
                 }]
             },
             options: chartOptions
         });
     }
     
-    // Activity chart (Pie/Doughnut)
+    // Activity chart (Pie/Doughnut) - Pollution Theme Colors
     const activityCtx = document.getElementById('activityChart');
     if (activityCtx) {
         activityChart = new Chart(activityCtx.getContext('2d'), {
@@ -395,13 +426,13 @@ function initializeCharts() {
                 datasets: [{
                     data: [],
                     backgroundColor: [
-                        'rgba(139, 92, 246, 0.85)',
-                        'rgba(59, 130, 246, 0.85)',
-                        'rgba(236, 72, 153, 0.85)',
-                        'rgba(34, 197, 94, 0.85)',
-                        'rgba(251, 146, 60, 0.85)'
+                        'rgba(200, 90, 45, 0.85)',    // Rust Orange - Transport
+                        'rgba(184, 212, 51, 0.85)',  // Acid Yellow-Green - Energy
+                        'rgba(90, 107, 122, 0.85)',  // Smog Blue - Industry
+                        'rgba(107, 142, 90, 0.85)', // Moss Green - Waste
+                        'rgba(74, 74, 74, 0.85)'     // Iron Grey - Other
                     ],
-                    borderColor: 'rgba(42, 42, 58, 0.5)',
+                    borderColor: 'rgba(18, 18, 18, 0.8)',
                     borderWidth: 2
                 }]
             },

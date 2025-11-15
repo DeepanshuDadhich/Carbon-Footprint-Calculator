@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 * {
     margin: 0;
@@ -7,35 +7,45 @@
 }
 
 :root {
-    /* Primary Colors */
-    --accent-color: #3A4A5C;
-    --accent-color-light: #4A5A6C;
-    --accent-color-lighter: #5A6A7C;
-    
-    /* Background Colors */
-    --black: #000000;
-    --black-light: #1A1A1A;
-    --black-lighter: #2D2D2D;
-    
-    /* Card Colors */
-    --card-bg: #2A2A3A;
-    --card-bg-light: #3A3A4A;
-    --card-bg-lighter: #4A4A5A;
-    
-    /* Text Colors */
+    /* Pollution-Themed Color Palette - Matching main styles */
+    --charcoal-deep: #0A0A0A;
+    --charcoal-black: #121212;
+    --charcoal-dark: #1A1A1A;
+    --soot-dark: #2A2A2A;
+    --soot-medium: #3A3A3A;
+    --iron-grey: #4A4A4A;
+    --iron-grey-light: #5A5A5A;
+    --rust-orange: #C85A2D;
+    --rust-orange-light: #D9734A;
+    --rust-orange-dark: #A84A1F;
+    --acid-yellow-green: #B8D433;
+    --acid-yellow-green-light: #C9E44A;
+    --acid-yellow-green-dark: #9FB82A;
+    --moss-green: #6B8E5A;
+    --moss-green-light: #7FA66B;
+    --moss-green-dark: #5A7549;
+    --smog-blue: #5A6B7A;
+    --smog-blue-light: #6B7C8A;
+    --smog-blue-dark: #4A5A6A;
     --text-light: #E8E8E8;
     --text-medium: #B0B0B0;
     --text-dark: #808080;
     --placeholder: #6B7280;
+    --input-bg: #2A2A2A;
+    --input-text: #E8E8E8;
+    --input-border: #3A3A3A;
     
-    /* Input Colors */
-    --input-bg: #F5F5F5;
-    --input-text: #1A1A1A;
-    
-    /* Dark Brown (for borders) */
-    --dark-brown: #2D2D2D;
-    --dark-brown-light: #3A3A3A;
-    --dark-brown-lighter: #4A4A4A;
+    /* Legacy compatibility */
+    --accent-color: var(--smog-blue);
+    --accent-color-light: var(--smog-blue-light);
+    --accent-color-lighter: var(--smog-blue-light);
+    --black: var(--charcoal-black);
+    --black-light: var(--charcoal-dark);
+    --black-lighter: var(--soot-dark);
+    --card-bg: var(--soot-dark);
+    --dark-brown: var(--soot-dark);
+    --dark-brown-light: var(--soot-medium);
+    --dark-brown-lighter: var(--iron-grey);
 }
 
 /* Custom Scrollbar */
@@ -57,7 +67,7 @@
 }
 
 body {
-    font-family: 'Inter', 'Nunito', system-ui, sans-serif;
+    font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -68,9 +78,10 @@ body {
     overflow-x: hidden;
     scroll-behavior: smooth;
     overscroll-behavior-y: none;
+    background: var(--charcoal-deep);
 }
 
-/* Animated Background */
+/* Animated Background - Industrial Theme */
 body::before {
     content: '';
     position: fixed;
@@ -81,19 +92,18 @@ body::before {
     z-index: -2;
     background: linear-gradient(
         135deg,
-        var(--black) 0%,
-        var(--black-light) 25%,
-        var(--black-lighter) 50%,
-        var(--accent-color) 75%,
-        var(--black-lighter) 90%,
-        var(--black-light) 100%,
-        var(--black) 100%
+        var(--charcoal-deep) 0%,
+        var(--charcoal-black) 20%,
+        var(--charcoal-dark) 40%,
+        var(--soot-dark) 60%,
+        var(--charcoal-dark) 80%,
+        var(--charcoal-black) 100%
     );
     background-size: 400% 400%;
-    animation: carbonGradientShift 25s ease infinite;
+    animation: carbonGradientShift 30s ease infinite;
 }
 
-/* Smoke Plumes Effect */
+/* Smoke Plumes Effect - Enhanced */
 body::after {
     content: '';
     position: fixed;
@@ -103,11 +113,13 @@ body::after {
     height: 100%;
     z-index: -1;
     background: 
-        radial-gradient(circle at 20% 50%, rgba(58, 74, 92, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(58, 74, 92, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 40% 20%, rgba(58, 74, 92, 0.1) 0%, transparent 50%);
-    animation: smokeRise 30s ease-in-out infinite;
-    opacity: 0.1;
+        radial-gradient(circle at 15% 30%, rgba(200, 90, 45, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 70%, rgba(90, 107, 122, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 10%, rgba(184, 212, 51, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 30% 80%, rgba(42, 42, 42, 0.12) 0%, transparent 55%);
+    animation: smokeRise 35s ease-in-out infinite;
+    opacity: 0.15;
+    filter: blur(2px);
 }
 
 .login-container {
@@ -119,18 +131,24 @@ body::after {
 }
 
 .login-card {
-    background: rgba(42, 42, 58, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(58, 74, 92, 0.3);
-    border-radius: 20px;
+    background: var(--soot-dark);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--iron-grey);
+    border-radius: 16px;
     padding: 40px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
     color: var(--text-light);
-    transition: all 0.3s ease;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .login-card:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    box-shadow: 
+        0 12px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    border-color: var(--iron-grey-light);
 }
 
 .logo {
@@ -194,14 +212,14 @@ body::after {
 
 .form-group input {
     width: 100%;
-    padding: 14px;
-    border: 1.5px solid var(--dark-brown-light);
+    padding: 14px 16px;
+    border: 1.5px solid var(--input-border);
     background: var(--input-bg);
     color: var(--input-text);
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1em;
-    transition: border-color 0.3s, box-shadow 0.2s;
-    font-family: 'Inter', 'Nunito', system-ui, sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Inter', sans-serif;
 }
 
 .form-group input::placeholder {
@@ -210,25 +228,37 @@ body::after {
 
 .form-group input:focus {
     outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(58, 74, 92, 0.4);
+    border-color: var(--smog-blue);
+    box-shadow: 
+        0 0 0 3px rgba(90, 107, 122, 0.2),
+        inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    background: var(--soot-medium);
+}
+
+.form-group input:hover {
+    border-color: var(--iron-grey-light);
 }
 
 .btn-primary {
     width: 100%;
-    background: var(--accent-color);
+    background: linear-gradient(135deg, var(--smog-blue) 0%, var(--smog-blue-dark) 100%);
     color: var(--text-light);
-    border: none;
+    border: 1px solid var(--iron-grey);
     padding: 14px;
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 1.1em;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     margin-top: 10px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .btn-primary::before {
@@ -239,15 +269,18 @@ body::after {
     width: 0;
     height: 0;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(58, 74, 92, 0.4);
-    background: var(--accent-color-light);
+    transform: translateY(-3px);
+    box-shadow: 
+        0 8px 20px rgba(90, 107, 122, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, var(--smog-blue-light) 0%, var(--smog-blue) 100%);
+    border-color: var(--iron-grey-light);
 }
 
 .btn-primary:hover::before {
@@ -256,13 +289,14 @@ body::after {
 }
 
 .btn-primary:active {
-    transform: translateY(0) scale(1);
+    transform: translateY(-1px);
 }
 
 .btn-primary:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+    background: var(--soot-medium);
 }
 
 .divider {
