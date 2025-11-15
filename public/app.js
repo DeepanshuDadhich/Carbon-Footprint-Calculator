@@ -47,7 +47,7 @@ function updateFormFields() {
                     </select>
                 </div>
                 <div class="info-box">
-                    💡 Enter your electricity consumption to calculate emissions from grid energy use.
+                    Enter your electricity consumption to calculate emissions from grid energy use.
                 </div>
             `;
             break;
@@ -85,7 +85,7 @@ function updateFormFields() {
                     </select>
                 </div>
                 <div class="info-box">
-                    🚗 Calculate emissions from your travel activities including commuting and trips.
+                    Calculate emissions from your travel activities including commuting and trips.
                 </div>
             `;
             break;
@@ -129,7 +129,7 @@ function updateFormFields() {
                     </select>
                 </div>
                 <div class="info-box">
-                    📦 Calculate emissions from shipping and freight transportation.
+                    Calculate emissions from shipping and freight transportation.
                 </div>
             `;
             break;
@@ -169,7 +169,7 @@ function updateFormFields() {
                     </select>
                 </div>
                 <div class="info-box">
-                    🛒 Calculate emissions from purchases and procurement activities.
+                    Calculate emissions from purchases and procurement activities.
                 </div>
             `;
             break;
@@ -197,7 +197,7 @@ function updateFormFields() {
                     </select>
                 </div>
                 <div class="info-box">
-                    ⛽ Calculate emissions from direct fuel consumption.
+                    Calculate emissions from direct fuel consumption.
                 </div>
             `;
             break;
@@ -256,7 +256,7 @@ async function calculateEmission(event) {
     // Get the button element
     const button = event ? event.target : document.querySelector('.btn-primary');
     if (!button) {
-        showToast('❌ Button not found', 'error');
+        showToast('Button not found', 'error');
         return;
     }
     
@@ -296,7 +296,7 @@ async function calculateEmission(event) {
                 });
             }
             
-            showToast(`✅ Emission calculated: ${result.data.co2e_kg.toFixed(2)} kg CO₂e`, 'success');
+            showToast(`Emission calculated: ${result.data.co2e_kg.toFixed(2)} kg CO₂e`, 'success');
             
             // Reset form after successful calculation (without showing toast)
             resetForm(false);
@@ -308,12 +308,12 @@ async function calculateEmission(event) {
         } else {
             // Show detailed error message
             const errorMsg = result.error.message || result.error || 'Calculation failed';
-            showToast(`❌ Error: ${errorMsg}`, 'error');
+            showToast(`Error: ${errorMsg}`, 'error');
             console.error('API Error:', result.error);
         }
     } catch (error) {
         console.error('Error:', error);
-        showToast('❌ Network error. Please check your connection.', 'error');
+        showToast('Network error. Please check your connection.', 'error');
         
         // Re-enable button on error
         if (button) {
@@ -392,7 +392,7 @@ async function loadHistory() {
             historyDiv.innerHTML = recentActivities.map(activity => `
                 <div class="activity-item">
                     <div class="activity-header">
-                        <span class="activity-type">${getActivityIcon(activity.activity_type)} ${activity.activity_type}</span>
+                        <span class="activity-type">${activity.activity_type.charAt(0).toUpperCase() + activity.activity_type.slice(1)}</span>
                         <span class="activity-co2">${activity.co2_kg.toFixed(2)} kg CO₂e</span>
                     </div>
                     <div class="activity-details">${formatActivityDetails(activity)}</div>
@@ -420,7 +420,7 @@ async function loadHistory() {
             historyDiv.innerHTML = recentActivities.map(activity => `
                 <div class="activity-item">
                     <div class="activity-header">
-                        <span class="activity-type">${getActivityIcon(activity.activity_type)} ${activity.activity_type}</span>
+                        <span class="activity-type">${activity.activity_type.charAt(0).toUpperCase() + activity.activity_type.slice(1)}</span>
                         <span class="activity-co2">${activity.co2_kg.toFixed(2)} kg CO₂e</span>
                     </div>
                     <div class="activity-details">${formatActivityDetails(activity)}</div>
@@ -436,14 +436,8 @@ async function loadHistory() {
 
 // Helper functions
 function getActivityIcon(activityType) {
-    const icons = {
-        'electricity': '⚡',
-        'travel': '🚗',
-        'freight': '📦',
-        'procurement': '🛒',
-        'fuel': '⛽'
-    };
-    return icons[activityType] || '📊';
+    // Return empty string for cleaner aesthetic
+    return '';
 }
 
 function formatActivityDetails(activity) {
